@@ -8,6 +8,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +18,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private ListView lvCountries;
+    private ListView lstDictionary;
     private Map<String, String> dictionary;
 
     @Override
@@ -23,17 +26,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        lstDictionary = findViewById(R.id.lstDictionary);
         dictionary = new HashMap<>();
-        dictionary.put("Nepal","Kathmandu");
-        dictionary.put("India","New Delhi");
-        dictionary.put("China","Bejing");
-        dictionary.put("Japan","Tokya");
 
-        lvCountries = findViewById(R.id.lvCountries);
+        readFromFile();
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<String>(dictionary.keySet()));
-        lvCountries.setAdapter(adapter);
+        lstDictionary.setAdapter(adapter);
 
-        lvCountries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lstDictionary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String country = parent.getItemAtPosition(position).toString();
@@ -41,5 +41,20 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, capital);
             }
         });
+    }
+
+    private void readFromFile(){
+        try{
+            FileInputStream fos =  openFileInput("words.txt");
+            InputStreamReader isr = new InputStreamReader(fos);
+            BufferedReader br = new BufferedReader(isr);
+            String line = "";
+            while ( (line=br.readLine()) != null ){
+                String[] parts = line.split("=");
+                dictionary.put(parts[0],parts[1]);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

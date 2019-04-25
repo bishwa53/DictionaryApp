@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <ListView
-        android:id="@+id/lvCountries"
+        android:id="@+id/lstDictionary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
